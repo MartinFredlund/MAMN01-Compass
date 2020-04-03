@@ -1,11 +1,14 @@
 package com.example.compass;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Compass extends AppCompatActivity implements SensorEventListener {
     ImageView compass_img;
     TextView txt_compass;
+    Vibrator v;
     int mAzimuth;
     private SensorManager mSensorManager;
     private Sensor mRotationV, mAccelerometer, mMagnetometer;
@@ -26,6 +30,7 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
     private boolean mLastAccelerometerSet = false;
     private boolean mLastMagnetometerSet = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +40,7 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         compass_img = findViewById(R.id.img_compass);
         txt_compass = findViewById(R.id.txt_azimuth);
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         start();
     }
@@ -64,8 +70,10 @@ public class Compass extends AppCompatActivity implements SensorEventListener {
 
         String where = "NW";
 
-        if (mAzimuth >= 350 || mAzimuth <= 10)
+        if (mAzimuth >= 350 || mAzimuth <= 10) {
             where = "N";
+            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
         if (mAzimuth < 350 && mAzimuth > 280)
             where = "NW";
         if (mAzimuth <= 280 && mAzimuth > 260)
